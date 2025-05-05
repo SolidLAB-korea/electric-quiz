@@ -1,0 +1,31 @@
+name: Build & Deploy Quiz
+
+on:
+  push:
+    paths:
+      - 'generate_quiz.py'
+      - '기사기출.pdf'
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: pip install PyPDF2
+
+      - name: Generate index.html
+        run: python generate_quiz.py
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./
